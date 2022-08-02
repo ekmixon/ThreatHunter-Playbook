@@ -6,7 +6,7 @@ import glob
 from os import path
 import nbformat as nbf
 
-print("[+] Processing files inside {} directory".format('../docs/evals/apt29/steps'))
+print('[+] Processing files inside ../docs/evals/apt29/steps directory')
 # ******** Open every forge yaml file available ****************
 print("[+] Opening report yaml files..")
 yaml_files = sorted(glob.glob(path.join(path.dirname(__file__), '../docs/evals/apt29/steps', "*.yaml")), key=lambda x: (int(path.basename(x).split(".")[0]), str(path.basename(x).split(".")[1]), int(path.basename(x).split(".")[2].split("_")[0])))
@@ -50,11 +50,17 @@ for step in yaml_loaded:
             for q in detection['queries']:
                 query_for_render = copy.deepcopy(q)
                 markdown = detection_template.render(renderquery=query_for_render)
-                if (path.exists('../docs/evals/apt29/detections/{}_{}.md'.format(step['step'],q['id']))):
-                    print('[!] {}_{}.md already exists'.format(step['step'],q['id']))
+                if path.exists(
+                    f"../docs/evals/apt29/detections/{step['step']}_{q['id']}.md"
+                ):
+                    print(f"[!] {step['step']}_{q['id']}.md already exists")
                 else:
-                    print('  [>] {}_{}.md detection created'.format(step['step'],q['id']))
-                    open('../docs/evals/apt29/detections/{}_{}.md'.format(step['step'],q['id']), 'w').write(markdown)
+                    print(f"  [>] {step['step']}_{q['id']}.md detection created")
+                    open(
+                        f"../docs/evals/apt29/detections/{step['step']}_{q['id']}.md",
+                        'w',
+                    ).write(markdown)
+
 
 # ******** Create OTR Results JSON File ********
 print("\n[+] Creating the APT29 OTR JSON File..")
@@ -197,7 +203,7 @@ nb['cells'].append(nbf.v4.new_code_cell("df_day1_host.createTempView('apt29Host'
 # **** ADVERSARY - DETECTION STEPS ****
 nb['cells'].append(nbf.v4.new_markdown_cell("## Adversary - Detection Steps"))
 for yaml in yaml_loaded:
-    print("  [>] Processing Step {}..".format(yaml['step']))
+    print(f"  [>] Processing Step {yaml['step']}..")
     # **** MAIN STEPS ****
     nb['cells'].append(nbf.v4.new_markdown_cell("""## {}. {}
 **Procedure:** {}
@@ -205,11 +211,16 @@ for yaml in yaml_loaded:
 """.format(yaml['step'],yaml['technique']['name'],yaml['procedure'],yaml['criteria'])))
     # **** DETECTIONS ****
     for detection in yaml['detections']:
-        nb['cells'].append(nbf.v4.new_markdown_cell("### Detection Type:{}({})".format(detection['main_type'],detection['modifier_type'])))
+        nb['cells'].append(
+            nbf.v4.new_markdown_cell(
+                f"### Detection Type:{detection['main_type']}({detection['modifier_type']})"
+            )
+        )
+
         if detection['queries']:
             # **** AVAILABLE QUERIES ****
             for q in detection['queries']:
-                nb['cells'].append(nbf.v4.new_markdown_cell("**Query ID:{}**".format(q['id'])))
+                nb['cells'].append(nbf.v4.new_markdown_cell(f"**Query ID:{q['id']}**"))
                 nb['cells'].append(nbf.v4.new_code_cell("""df = spark.sql(
 '''
 {}

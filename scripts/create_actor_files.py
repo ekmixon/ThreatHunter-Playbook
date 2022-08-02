@@ -22,9 +22,9 @@ for g in groups:
         "group_id" : g['external_references'][0]['external_id'],
         "techniques" : []
     }
-    groups_list.append(groupDict)      
+    groups_list.append(groupDict)
 for group in groups_list:
-    print("  [>>] Grouping techniques for {} actor..".format(group['name']))
+    print(f"  [>>] Grouping techniques for {group['name']} actor..")
     for gut in techniques_used:
         if group['name'] == gut['name']:
             techniqueDict = {
@@ -45,6 +45,9 @@ for group in groups_list:
     # Generate the markdown
     markdown = group_template.render(group=group_for_render)
 
-    print("  [>>] writing {} group information to {}.md..".format(group['name'], group['group_id']))
+    print(
+        f"  [>>] writing {group['name']} group information to {group['group_id']}.md.."
+    )
+
     # Save to the group page
-    open('../docs/content/cti/{}.md'.format(group['group_id']), 'w').write(markdown)
+    open(f"../docs/content/cti/{group['group_id']}.md", 'w').write(markdown)

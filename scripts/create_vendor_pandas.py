@@ -61,14 +61,24 @@ substeps_telemetry_count = len(apt29_telemetry['substep'].index)
 percentage = '{0:.2f}'.format((substeps_telemetry_count / substeps_all_count * 100))
 
 # Visualize
-chart = alt.Chart(apt29_grouped).mark_bar().encode(
-   alt.Y('stepname:N',sort=alt.EncodingSortField(field="step", order='ascending'), title='Emulation Plan Steps'),
-   alt.X('sum(count):Q'),
-   alt.Color('step:N', scale=alt.Scale(scheme='dark2')),
-   alt.Order('sum(count):Q', sort='ascending')
-).properties(
-    title='Telemetry Detection Category ({} % Coverage)'.format(percentage)
+chart = (
+    alt.Chart(apt29_grouped)
+    .mark_bar()
+    .encode(
+        alt.Y(
+            'stepname:N',
+            sort=alt.EncodingSortField(field="step", order='ascending'),
+            title='Emulation Plan Steps',
+        ),
+        alt.X('sum(count):Q'),
+        alt.Color('step:N', scale=alt.Scale(scheme='dark2')),
+        alt.Order('sum(count):Q', sort='ascending'),
+    )
+    .properties(
+        title=f'Telemetry Detection Category ({percentage} % Coverage)'
+    )
 )
+
 
 text = chart.mark_text(
     align='left',
